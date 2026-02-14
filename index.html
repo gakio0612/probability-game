@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>確率ボタンゲーム</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
+<style>
+body {
+  background: #000;
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.pachinko-frame {
+  display: inline-block;
+  margin-top: 80px;
+  padding: 20px;
+  border-radius: 50%;
+  animation: rainbow 2s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { box-shadow: 0 0 40px red; }
+  25% { box-shadow: 0 0 40px yellow; }
+  50% { box-shadow: 0 0 40px lime; }
+  75% { box-shadow: 0 0 40px cyan; }
+  100% { box-shadow: 0 0 40px red; }
+}
+
+.pachinko-button {
+  width: 220px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.pachinko-button:active {
+  transform: scale(0.85);
+}
+
+.start-text {
+  margin-top: 15px;
+  font-size: 32px;
+  font-weight: bold;
+  animation: blink 0.6s infinite alternate;
+}
+
+@keyframes blink {
+  from { opacity: 1; }
+  to { opacity: 0.3; }
+}
+
+.sparkle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkleAnim 0.6s linear forwards;
+}
+
+@keyframes sparkleAnim {
+  to {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+}
+
+#result {
+  margin-top: 30px;
+  font-size: 28px;
+}
+
+#count {
+  font-size: 18px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎰 確率ボタンゲーム</h1>
+
+<div class="pachinko-frame">
+  <img id="startButton" src="button.png" class="pachinko-button">
+</div>
+
+<div class="start-text">START</div>
+
+<div id="result"></div>
+<div id="count">回数: 0</div>
+
+<audio id="winSound"
+src="https://ringtones.miyanova.com/data/1066.mp3"></audio>
+
+<script>
+let denominator = 10;
+let tries = 0;
+
+const button = document.getElementById("startButton");
+const result = document.getElementById("result");
+const count = document.getElementById("count");
+const sound = document.getElementById("winSound");
+
+button.addEventListener("click", () => {
+
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = (window.innerWidth/2 + Math.random()*100-50) + "px";
+    s.style.top = (window.innerHeight/2 + Math.random()*100-50) + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 600);
+  }
+
+  tries++;
+  count.textContent = "回数: " + tries;
+
+  if (Math.floor(Math.random() * denominator) === 0) {
+    result.textContent = "🎉 当たり！";
+    sound.play();
+  } else {
+    result.textContent = "ハズレ";
+  }
+});
+
+// PWA登録
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+
+</body>
+</html>
