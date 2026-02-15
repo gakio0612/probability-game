@@ -175,20 +175,21 @@ btn.addEventListener("click", () => {
   const win = Math.random() < 1 / denom;
 
   if (win) {
-    finished = true;
+  finished = true;
 
-    playSound(); // 🔥 即再生
-
+  requestAnimationFrame(() => {
+    playSound();
     document.body.classList.add("flash");
+  });
 
-    if (navigator.vibrate) {
-      navigator.vibrate([100, 50, 100, 50, 300]);
-    }
-
-    setTimeout(() => {
-      document.body.classList.remove("flash");
-    }, 2000);
+  if (navigator.vibrate) {
+    navigator.vibrate([100, 50, 100, 50, 300]);
   }
+
+  setTimeout(() => {
+    document.body.classList.remove("flash");
+  }, 2000);
+}
 });
 
 /* リセット */
