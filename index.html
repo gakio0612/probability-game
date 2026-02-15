@@ -44,8 +44,15 @@ button {
 
 #pachinkoBtn img {
   width: 260px;
-  filter: drop-shadow(0 0 15px red);
-  transition: transform 0.1s;
+  filter: drop-shadow(0 0 20px red);
+  transition: transform 0.08s ease,
+              filter 0.08s ease;
+}
+
+/* 押したとき */
+#pachinkoBtn:active img {
+  transform: scale(0.88) translateY(8px);
+  filter: drop-shadow(0 0 5px red);
 }
 
 #pachinkoBtn:active img {
