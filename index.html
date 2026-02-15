@@ -107,6 +107,22 @@ const probInput = document.getElementById("prob");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let audioBuffer = null;
+let unlocked = false;
+
+function unlockAudio() {
+  if (unlocked) return;
+
+  const buffer = audioCtx.createBuffer(1, 1, 22050);
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
+
+  unlocked = true;
+}
+
+document.addEventListener("touchstart", unlockAudio, { once: true });
+document.addEventListener("mousedown", unlockAudio, { once: true });
 
 // 音を事前読み込み
 fetch("1066.mp3")
