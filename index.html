@@ -36,10 +36,14 @@ input {
   font-size: 18px;
 }
 
-button {
-  margin: 5px;
-  padding: 10px 20px;
-  font-size: 18px;
+/* ===== ボタン ===== */
+
+#pachinkoBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 #pachinkoBtn img {
@@ -49,16 +53,13 @@ button {
               filter 0.08s ease;
 }
 
-/* 押したとき */
-#pachinkoBtn:active img {
-  transform: scale(0.88) translateY(8px);
+/* 押したら沈む */
+#pachinkoBtn.pressed img {
+  transform: scale(0.85) translateY(10px);
   filter: drop-shadow(0 0 5px red);
 }
 
-#pachinkoBtn:active img {
-  transform: scale(0.9);
-}
-
+/* 当たり演出 */
 .flash {
   animation: flash 0.2s infinite;
 }
@@ -69,6 +70,12 @@ button {
   50% { background: lime; }
   75% { background: cyan; }
   100% { background: magenta; }
+}
+
+#nextBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
 }
 </style>
 </head>
@@ -99,6 +106,23 @@ const nextBtn = document.getElementById("nextBtn");
 const counter = document.getElementById("counter");
 const probInput = document.getElementById("prob");
 const sound = document.getElementById("winSound");
+
+/* ===== 沈む演出 ===== */
+
+function pressOn() {
+  btn.classList.add("pressed");
+}
+
+function pressOff() {
+  btn.classList.remove("pressed");
+}
+
+btn.addEventListener("touchstart", pressOn);
+btn.addEventListener("touchend", pressOff);
+btn.addEventListener("mousedown", pressOn);
+btn.addEventListener("mouseup", pressOff);
+
+/* ===== ゲーム処理 ===== */
 
 btn.addEventListener("click", () => {
 
@@ -134,12 +158,16 @@ btn.addEventListener("click", () => {
   }
 });
 
+/* リセット */
+
 nextBtn.addEventListener("click", () => {
   count = 0;
   finished = false;
   counter.textContent = "回数: 0";
   document.body.classList.remove("flash");
 });
+
+/* PWA */
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
