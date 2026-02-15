@@ -14,17 +14,32 @@ body {
   margin: 0;
   height: 100vh;
   background: black;
+  color: white;
+  font-family: sans-serif;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 
-/* パチンコボタン */
-#pachinkoBtn {
-  background: none;
-  border: none;
-  padding: 0;
+#counter {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+#controls {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100px;
+  font-size: 18px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 18px;
 }
 
 #pachinkoBtn img {
@@ -37,7 +52,6 @@ body {
   transform: scale(0.9);
 }
 
-/* 当たり演出 */
 .flash {
   animation: flash 0.2s infinite;
 }
@@ -54,21 +68,49 @@ body {
 
 <body>
 
+<div id="counter">回数: 0</div>
+
+<div id="controls">
+  確率 1 /
+  <input type="number" id="prob" value="10" min="1" max="99999">
+</div>
+
 <button id="pachinkoBtn">
   <img src="button.png">
 </button>
 
+<button id="nextBtn">次へ</button>
+
 <audio id="winSound" src="1066.mp3"></audio>
 
 <script>
+let count = 0;
+let finished = false;
+
 const btn = document.getElementById("pachinkoBtn");
+const nextBtn = document.getElementById("nextBtn");
+const counter = document.getElementById("counter");
+const probInput = document.getElementById("prob");
 const sound = document.getElementById("winSound");
 
 btn.addEventListener("click", () => {
 
-  const win = Math.random() < 0.2; // 当たり確率20%
+  if (finished) return;
+
+  let denom = parseInt(probInput.value);
+
+  if (!denom || denom < 1) denom = 1;
+  if (denom > 99999) denom = 99999;
+
+  probInput.value = denom;
+
+  count++;
+  counter.textContent = "回数: " + count;
+
+  const win = Math.random() < 1 / denom;
 
   if (win) {
+    finished = true;
 
     sound.currentTime = 0;
     sound.play();
@@ -85,7 +127,13 @@ btn.addEventListener("click", () => {
   }
 });
 
-/* PWA登録 */
+nextBtn.addEventListener("click", () => {
+  count = 0;
+  finished = false;
+  counter.textContent = "回数: 0";
+  document.body.classList.remove("flash");
+});
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
