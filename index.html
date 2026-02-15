@@ -95,10 +95,6 @@ input {
 
 <button id="nextBtn">次へ</button>
 
-<audio id="winSound" src="1066.mp3" preload="auto"></audio>
-
-<script>
-sound.load();
 let count = 0;
 let finished = false;
 
@@ -106,7 +102,28 @@ const btn = document.getElementById("pachinkoBtn");
 const nextBtn = document.getElementById("nextBtn");
 const counter = document.getElementById("counter");
 const probInput = document.getElementById("prob");
-const sound = document.getElementById("winSound");sound.load();
+
+/* ===== WebAudio 超低遅延サウンド ===== */
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioBuffer = null;
+
+// 音を事前読み込み
+fetch("1066.mp3")
+  .then(res => res.arrayBuffer())
+  .then(data => audioCtx.decodeAudioData(data))
+  .then(buffer => {
+    audioBuffer = buffer;
+  });
+
+function playSound() {
+  if (!audioBuffer) return;
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
+}
 
 /* ===== 沈む演出 ===== */
 
@@ -144,8 +161,7 @@ btn.addEventListener("click", () => {
   if (win) {
     finished = true;
 
-    sound.currentTime = 0;
-    sound.play();
+    playSound(); // 🔥 即再生
 
     document.body.classList.add("flash");
 
