@@ -95,7 +95,7 @@ input {
 
 <button id="nextBtn">次へ</button>
 
-<audio id="winSound" src="1066.mp3"></audio>
+<audio id="winSound" src="1066.mp3" preload="auto"></audio>
 
 <script>
 let count = 0;
@@ -105,7 +105,7 @@ const btn = document.getElementById("pachinkoBtn");
 const nextBtn = document.getElementById("nextBtn");
 const counter = document.getElementById("counter");
 const probInput = document.getElementById("prob");
-const sound = document.getElementById("winSound");
+const sound = document.getElementById("winSound");sound.load();
 
 /* ===== 沈む演出 ===== */
 
