@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>パチンコボタン</title>
+<title>確率ボタンゲーム</title>
 
-<!-- PWA設定 -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff0000">
 
@@ -23,25 +22,24 @@ body {
 
 /* パチンコボタン */
 #pachinkoBtn {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+  background: none;
   border: none;
-  background: radial-gradient(circle, #ff0000, #800000);
-  box-shadow: 0 0 20px red;
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-  transition: 0.1s;
+  padding: 0;
 }
 
-#pachinkoBtn:active {
+#pachinkoBtn img {
+  width: 260px;
+  filter: drop-shadow(0 0 15px red);
+  transition: transform 0.1s;
+}
+
+#pachinkoBtn:active img {
   transform: scale(0.9);
 }
 
-/* 当たり演出（レインボー点滅） */
+/* 当たり演出 */
 .flash {
-  animation: flash 0.3s infinite;
+  animation: flash 0.2s infinite;
 }
 
 @keyframes flash {
@@ -56,31 +54,38 @@ body {
 
 <body>
 
-<button id="pachinkoBtn"></button>
+<button id="pachinkoBtn">
+  <img src="button.png">
+</button>
+
+<audio id="winSound" src="1066.mp3"></audio>
 
 <script>
 const btn = document.getElementById("pachinkoBtn");
+const sound = document.getElementById("winSound");
 
 btn.addEventListener("click", () => {
 
-  // ランダム当たり判定（20%）
-  const win = Math.random() < 0.2;
+  const win = Math.random() < 0.2; // 当たり確率20%
 
   if (win) {
-    btn.classList.add("flash");
 
-    // 振動（スマホ）
+    sound.currentTime = 0;
+    sound.play();
+
+    document.body.classList.add("flash");
+
     if (navigator.vibrate) {
       navigator.vibrate([100, 50, 100, 50, 300]);
     }
 
     setTimeout(() => {
-      btn.classList.remove("flash");
+      document.body.classList.remove("flash");
     }, 2000);
   }
 });
 
-// PWA Service Worker登録
+/* PWA登録 */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
