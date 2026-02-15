@@ -5,8 +5,8 @@ self.addEventListener('install', e => {
         './',
         './index.html',
         './manifest.json',
-        './1066.mp3',
-        './button.svg'
+        './button.svg',
+        './1066.mp3'
       ]);
     })
   );
